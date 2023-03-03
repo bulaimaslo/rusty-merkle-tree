@@ -37,30 +37,40 @@ impl MerkleTree {
 
     pub fn add_node(&mut self, transaction: Vec<String>) {
         let hash = hash_data(transaction);
-
-        let node = Node {
+        let new_node = Node {
             hash: hash,
             left: None,
             right: None,
         };
 
-        self.add_node_to_tree(node);
-    }
-
-    fn add_node_to_tree(&mut self, node: Node) {
-        let mut current_node = &mut self.root;
-
-        while current_node.left.is_some() && current_node.right.is_some() {
-            current_node = current_node.left.as_mut().unwrap();
+        let mut parent_node = &mut self.root;
+        let mut is_left_node = true;
+        loop {
+            if is_left_node {
+                if parent_node.left.is_none() {
+                    parent_node.left = Some(Box::new(new_node));
+                    break;
+                } else {
+                    let left_node = parent_node.left.as_mut().unwrap();
+                    let new_parent_hash =
+                        calculate_hash(&left_node.hash, &new_node.hash);
+                    parent_node.hash = new_parent_hash;
+                    parent_node = left_node.as_mut();
+                    is_left_node = true;
+                }
+            } else {
+                if parent_node.right.is_none() {
+                    parent_node.right = Some(Box::new(new_node));
+                    break;
+                } else {
+                    let right_node = parent_node.right.as_mut().unwrap();
+                    let new_parent_hash =
+                        calculate_hash(&new_node.hash, &right_node.hash);
+                    parent_node.hash = new_parent_hash;
+                    parent_node = right_node.as_mut();
+                    is_left_node = false;
+                }
+            }
         }
-
-        if current_node.left.is_none() {
-            current_node.left = Some(Box::new(node));
-        } else {
-            current_node.right = Some(Box::new(node));
-        }
-
-        todo!() // update hash
     }
 }
-

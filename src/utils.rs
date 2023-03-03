@@ -21,3 +21,11 @@ pub fn hash_data(transaction: Vec<String>) -> [u8; 32] {
 
     result.into()
 }
+
+pub fn calculate_hash(left_hash: &[u8; 32], right_hash: &[u8; 32]) -> [u8; 32] {
+        let mut hasher = Sha256::new();
+        hasher.update(left_hash);
+        hasher.update(right_hash);
+        let result = hasher.finalize();
+        result.into()
+    }
