@@ -24,8 +24,10 @@ fn main() {
     let mut tree = MerkleTree::new();
 
 
-    tree.print();
     let slice = &transactions[0..3];
-    tree.add_first_node(slice.to_vec());
+    tree.add_node(slice.to_vec());
+    tree.add_node(transactions[3..6].to_vec());
+    tree.add_node(transactions[6..9].to_vec());
+    tree.add_node(transactions[9..12].to_vec());
     tree.print();
 }

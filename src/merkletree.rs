@@ -1,4 +1,3 @@
-use sha2::{Digest, Sha256};
 use crate::utils::*;
 
 struct Node {
@@ -9,7 +8,6 @@ struct Node {
 
 pub struct MerkleTree {
     root: Node,
-    number_of_nodes: usize,
 }
 
 impl MerkleTree {
@@ -20,7 +18,6 @@ impl MerkleTree {
                 left: None,
                 right: None,
             },
-            number_of_nodes: 1,
         }
     }
 
@@ -38,26 +35,32 @@ impl MerkleTree {
         }
     }
 
+    pub fn add_node(&mut self, transaction: Vec<String>) {
+        let hash = hash_data(transaction);
 
-    pub fn add_first_node(&mut self, transaction: Vec<String>) {
-        let hash = self.hash_data(transaction);
-
-        self.root = Node {
+        let node = Node {
             hash: hash,
             left: None,
             right: None,
-        }
+        };
+
+        self.add_node_to_tree(node);
     }
 
-    fn hash_data(&self, transaction: Vec<String>) -> [u8; 32] {
-        let mut hasher = Sha256::new();
+    fn add_node_to_tree(&mut self, node: Node) {
+        let mut current_node = &mut self.root;
 
-        for item in transaction {
-            hasher.update(item);
+        while current_node.left.is_some() && current_node.right.is_some() {
+            current_node = current_node.left.as_mut().unwrap();
         }
 
-        let result = hasher.finalize();
+        if current_node.left.is_none() {
+            current_node.left = Some(Box::new(node));
+        } else {
+            current_node.right = Some(Box::new(node));
+        }
 
-        result.into()
+        todo!() // update hash
     }
 }
+
