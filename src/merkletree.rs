@@ -1,10 +1,5 @@
-use crate::utils::*;
+use crate::{utils::*, Node};
 
-struct Node {
-    hash: [u8; 32],
-    left: Option<Box<Node>>,
-    right: Option<Box<Node>>,
-}
 
 pub struct MerkleTree {
     root: Node,
@@ -45,6 +40,7 @@ impl MerkleTree {
 
         let mut parent_node = &mut self.root;
         let mut is_left_node = true;
+        
         loop {
             if is_left_node {
                 if parent_node.left.is_none() {
@@ -52,8 +48,7 @@ impl MerkleTree {
                     break;
                 } else {
                     let left_node = parent_node.left.as_mut().unwrap();
-                    let new_parent_hash =
-                        calculate_hash(&left_node.hash, &new_node.hash);
+                    let new_parent_hash = calculate_hash(&left_node.hash, &new_node.hash);
                     parent_node.hash = new_parent_hash;
                     parent_node = left_node.as_mut();
                     is_left_node = true;
@@ -64,8 +59,7 @@ impl MerkleTree {
                     break;
                 } else {
                     let right_node = parent_node.right.as_mut().unwrap();
-                    let new_parent_hash =
-                        calculate_hash(&new_node.hash, &right_node.hash);
+                    let new_parent_hash = calculate_hash(&new_node.hash, &right_node.hash);
                     parent_node.hash = new_parent_hash;
                     parent_node = right_node.as_mut();
                     is_left_node = false;
@@ -73,4 +67,9 @@ impl MerkleTree {
             }
         }
     }
+
+    pub fn validate_tree(&self) -> bool {
+        self.root.is_valid()
+    }
 }
+

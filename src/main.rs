@@ -30,4 +30,5 @@ fn main() {
     tree.add_node(transactions[6..9].to_vec());
     tree.add_node(transactions[9..12].to_vec());
     tree.print();
+    println!("{}", tree.validate_tree());
 }
