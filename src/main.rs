@@ -1,4 +1,6 @@
 use rusty_merkle_tree::MerkleTree;
+use rusty_merkle_tree::utils::*;
+
 
 fn main() {
     let transactions: Vec<String> = vec![
@@ -23,11 +25,20 @@ fn main() {
 
     let mut tree = MerkleTree::new();
 
-    for i in 0..transactions.len() {
+    for i in 0..(transactions.len() / 3) {
         let slice = &transactions[0..i];
         tree.add_node(slice.to_vec());
     }
 
     tree.print();
     println!("{}", tree.validate_tree());
+
+    let proof = tree.get_proof(transactions[0..3].to_vec());
+    println!("Proof: {:?}", proof);
+
+    let hash = hash_data(transactions[0..3].to_vec());
+    let contains_hash = tree.contains_hash(hash);
+    println!("{}", contains_hash);
+
+
 }
