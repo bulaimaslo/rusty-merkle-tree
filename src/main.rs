@@ -23,12 +23,11 @@ fn main() {
 
     let mut tree = MerkleTree::new();
 
+    for i in 0..transactions.len() {
+        let slice = &transactions[0..i];
+        tree.add_node(slice.to_vec());
+    }
 
-    let slice = &transactions[0..3];
-    tree.add_node(slice.to_vec());
-    tree.add_node(transactions[3..6].to_vec());
-    tree.add_node(transactions[6..9].to_vec());
-    tree.add_node(transactions[9..12].to_vec());
     tree.print();
     println!("{}", tree.validate_tree());
 }

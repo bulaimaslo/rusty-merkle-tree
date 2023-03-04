@@ -16,6 +16,12 @@ impl MerkleTree {
         }
     }
 
+    pub fn build_from_arr(&mut self, transactions: Vec<Vec<String>>) {
+        for transaction in transactions {
+            self.add_node(transaction);
+        }
+    }
+
     pub fn print(&self) {
         self.print_node(&self.root);
     }
